@@ -29,13 +29,13 @@ class Controls:
             command_string += " "
             command_string += command_code
         elif connection_type == "radio":
-            command_string += "pwd"
+            command_string += command_code
         else:
             print "Error: Unknown Connection Type"
             exit(1)
 
         os.system(command_string)
-        sleep(0.001)
+        #sleep(0.5)
 
 
 class SingleButton(Controls):
@@ -114,6 +114,44 @@ class ButtonPair(Controls):
             else:
                 for i in range(0, -number_of_clicks):
                     self.Down()
+
+class ButtonsOnOff(Controls):
+    def __init__(self, name, connection, command_on, command_off):
+        self.value = 0
+        self.default_value = 0
+        self.name = name
+        self.connection = connection
+        self.command_on = command_on
+        self.command_off = command_off
+    def __init__(self, name, default_value, connection, command_on, command_off):
+        self.name = name
+        self.default_value = default_value
+        self.value = default_value
+        self.connection = connection
+        self.command_on = command_on
+        self.command_off = command_off
+
+    # Click Up and Down have to be re-implemented
+    def ClickOn(self):
+        #print self.GetName(), " On: ", self.value
+        self.SendCommand(self.connection, self.command_on)
+    def ClickOff(self):
+        #print self.GetName(), " Off: ", self.value
+        self.SendCommand(self.connection, self.command_off)
+
+    def On(self):
+        self.value = 1
+        self.ClickOn()
+    def Off(self):
+        self.value = 0
+        self.ClickOff()
+
+    def SetValue(self, value):
+        if value != self.value:
+            if value == 1:
+                self.On()
+            else:
+                self.Off()
 
 class ControlInterfaceBase:
         def __init__(self, device_name):

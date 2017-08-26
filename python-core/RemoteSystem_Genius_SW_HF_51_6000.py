@@ -1,28 +1,35 @@
 from ControlInterfaceBase import *
 from time import sleep
 
-class PowerButton(SingleButton):
-    def __init__(self, name, default_value, connection, command, interface):
+class PowerButton(ButtonsOnOff):
+    def __init__(self, name, default_value, connection, command_on, command_off, interface):
         self.name = name
         self.default_value = default_value
         self.value = default_value
         self.connection = connection
-        self.command = command
+        self.command_on = command_on
+        self.command_off = command_off
         self.interface = interface
 
-    def Toogle(self):
+    def SetValue(self, value):
         was_off = 0
-        if self.value == 0:
+        if self.value == 0 and value == 1:
             self.value = 1
             was_off = 1
-        else:
+            self.ClickOn()
+        elif self.value == 1 and value == 0:
             self.value = 0
-        self.Click()
+	    self.interface.GetButton("mute").SetValue(1)
+	    sleep(0.5)
+	    self.ClickOff()
+
         if was_off:
-            sleep(1)
+            sleep(3)
             for button in self.interface.GetButtons():
-                if button.GetName() != "power":
+                if button.GetName() != "power" and button.GetName() != "reset" and button.GetName() != "mute":
                     button.RestoreValue()
+		if button.GetName() == "mute":
+		    button.Reset()
 
 class ResetButton(SingleButton):
     def __init__(self, name, default_value, connection, command, interface):
@@ -33,7 +40,7 @@ class ResetButton(SingleButton):
         self.command = command
         self.interface = interface
 
-    def Toogle(self):
+    def SetValue(self):
         self.Click()
         for button in self.interface.GetButtons():
             if button.GetName() != "mute":
@@ -46,7 +53,7 @@ class RemoteSystem_Genius_SW_HF_51_6000:
         ir_connection = "ir"
         radio_connection = "radio"
 
-        button_power = PowerButton("power", 1, radio_connection, "KEY_POWER", interface)
+        button_power = PowerButton("power", 1, radio_connection, "python /home/pi/python-core/RFSendAudio.py audio_on", "python /home/pi/python-core/RFSendAudio.py audio_off", interface)
         interface.SetButton(button_power)
 
         button_reset = ResetButton("reset", 0, ir_connection, "KEY_RESET", interface)
@@ -79,9 +86,10 @@ class RemoteSystem_Genius_SW_HF_51_6000:
         self.interface.GetButton("power").SetValue(0)
         sleep(1)
         self.interface.GetButton("power").SetValue(1)
-
+        sleep(1)
         for button in self.interface.GetButtons():
             button.Reset()
+	self.interface.GetButton("volume").SetValue(10)
 
     def GetInterface(self):
         return self.interface

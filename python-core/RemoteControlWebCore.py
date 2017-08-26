@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from BaseHTTPServer import BaseHTTPRequestHandler
 import urlparse
 from RemoteSystem_Genius_SW_HF_51_6000 import *
@@ -44,10 +46,13 @@ class GetHandler(BaseHTTPRequestHandler):
                 elif command == "toogle":
                     button = device.GetInterface().GetButton(parameter)
                     button.Toogle()
-                    message_parts.append("%s=%d" % (parameter, button.GetValue()))
+		    if parameter == "reset":
+			message_parts = device.GetStatus()
+		    else:
+                    	message_parts.append("%s=%d" % (parameter, button.GetValue()))
 
         # response starts here
-        message_parts.append('')
+	message_parts.append('')
         message = '\r\n'.join(message_parts)
         self.send_response(200)
         self.end_headers()
