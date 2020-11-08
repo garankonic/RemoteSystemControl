@@ -53,7 +53,8 @@ class RemoteSystem_Genius_SW_HF_51_6000:
         ir_connection = "ir"
         radio_connection = "radio"
 
-        button_power = PowerButton("power", 1, radio_connection, "python /home/pi/python-core/RFSendAudio.py audio_on", "python /home/pi/python-core/RFSendAudio.py audio_off", interface)
+        #button_power = PowerButton("power", 1, radio_connection, "python ./RFSendAudio.py audio_on", "python ./RFSendAudio.py audio_off", interface)
+        button_power = SingleButton("power", 1, ir_connection, "KEY_MUTE")
         interface.SetButton(button_power)
 
         button_reset = ResetButton("reset", 0, ir_connection, "KEY_RESET", interface)
@@ -83,13 +84,13 @@ class RemoteSystem_Genius_SW_HF_51_6000:
         self.SetButtons()
 
         #initial synchronization algorithm
-        self.interface.GetButton("power").SetValue(0)
-        sleep(1)
-        self.interface.GetButton("power").SetValue(1)
-        sleep(1)
+        #self.interface.GetButton("power").SetValue(0)
+        #sleep(1)
+        #self.interface.GetButton("power").SetValue(1)
+        #sleep(1)
         for button in self.interface.GetButtons():
             button.Reset()
-	self.interface.GetButton("volume").SetValue(10)
+	#self.interface.GetButton("volume").SetValue(10)
 
     def GetInterface(self):
         return self.interface

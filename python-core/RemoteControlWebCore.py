@@ -30,7 +30,7 @@ class GetHandler(BaseHTTPRequestHandler):
                     parameter = request[key][0]
                 elif key == "value":
                     value = request[key][0]
-                    print value
+                    print(value)
 
         message_parts = []
         for device in self.remote_systems:
@@ -62,5 +62,5 @@ class GetHandler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('', 8080), GetHandler)
-    print 'Starting server, use <Ctrl-C> to stop'
+    print('Starting server, use <Ctrl-C> to stop')
     server.serve_forever()

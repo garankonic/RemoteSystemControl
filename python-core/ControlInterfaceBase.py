@@ -31,7 +31,7 @@ class Controls:
         elif connection_type == "radio":
             command_string += command_code
         else:
-            print "Error: Unknown Connection Type"
+            print("Error: Unknown Connection Type")
             exit(1)
 
         os.system(command_string)
@@ -161,7 +161,7 @@ class ControlInterfaceBase:
             name = button.GetName()
             for entry in self.buttons:
                 if name == entry.GetName():
-                    print "Error. Button with name ", name, " already exists"
+                    print("Error. Button with name ", name, " already exists")
                     exit(1)
             button.SetDeviceName(self.device_name)
             self.buttons.append(button)
@@ -171,5 +171,5 @@ class ControlInterfaceBase:
             for button in self.buttons:
                 if button.GetName() == name:
                     return button
-            print "Error. Button ", name, " does not exist!"
+            print("Error. Button ", name, " does not exist!")
             exit(1)

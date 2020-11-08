@@ -1,0 +1,18 @@
+FROM balenalib/%%BALENA_MACHINE_NAME%%-python:2.7
+
+# install lirc
+RUN apt-get update && apt-get install -y lirc
+
+# workdir
+VOLUME /speaker-control
+WORKDIR /speaker-control
+
+# copy config and python server
+COPY python-core /speaker-control/
+COPY lirc_conf/* /etc/lirc/
+
+# run lircd daemon
+RUN service lircd start
+
+# run server
+CMD ["python","-u","RemoteControlWebCore.py"]
